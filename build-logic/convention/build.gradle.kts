@@ -37,5 +37,10 @@ gradlePlugin {
             id = "llc.bokadev.convention.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
+
+        register("androidComposeApplication") {
+            id = "llc.bokadev.convention.android.application.compose"
+            implementationClass = "AndroidApplicationComposeConventionPlugin"
+        }
     }
 }
