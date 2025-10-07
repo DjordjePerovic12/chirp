@@ -47,5 +47,10 @@ gradlePlugin {
             id = "llc.bokadev.convention.cmp.application"
             implementationClass = "CmpApplicationConventionPlugin"
         }
+
+        register("kmpLibrary") {
+            id = "llc.bokadev.convention.kmp.library"
+            implementationClass = "KmpLibraryConventionPlugin"
+        }
     }
 }
