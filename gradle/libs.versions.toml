@@ -47,6 +47,7 @@ coil = "3.3.0"
 coil-network = "3.3.0"
 moko = "0.20.1"
 buildkonfig = "0.17.1"
+kermit = "2.0.8"
 
 projectApplicationId = "llc.bokadev.chirp"
 projectVersionName = "1.0"
@@ -135,6 +136,9 @@ moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "mok
 moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko" }
 moko-permissions-notifications = { module = "dev.icerock.moko:permissions-notifications", version.ref = "moko" }
 
+# Logging
+touchlab-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+
 android-desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
@@ -150,11 +154,11 @@ androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-toolin
 
 koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
 jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-jetbrains" }
-jetbrains-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref="compose-jetbrains"}
-jetbrains-compose-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "material-icons"}
-jetbrains-compose-material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "material-icons"}
-jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref="compose-jetbrains"}
-jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref="compose-jetbrains"}
+jetbrains-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-jetbrains" }
+jetbrains-compose-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "material-icons" }
+jetbrains-compose-material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "material-icons" }
+jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-jetbrains" }
+jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-jetbrains" }
 
 
 jetbrains-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "compose-lifecycle" }
@@ -167,14 +171,14 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 
 [plugins]
 
-convention-android-application = { id = "llc.bokadev.convention.android.application", version = "unspecified"}
-convention-android-application-compose = { id = "llc.bokadev.convention.android.application.compose", version = "unspecified"}
-convention-cmp-application = { id = "llc.bokadev.convention.cmp.application", version = "unspecified"}
-convention-kmp-library = { id = "llc.bokadev.convention.kmp.library", version = "unspecified"}
-convention-cmp-library = { id = "llc.bokadev.convention.cmp.library", version = "unspecified"}
-convention-cmp-feature = { id = "llc.bokadev.convention.cmp.feature", version = "unspecified"}
-convention-buildkonfig = { id = "llc.bokadev.convention.buildkonfig", version = "unspecified"}
-convention-room = { id = "llc.bokadev.convention.room", version = "unspecified"}
+convention-android-application = { id = "llc.bokadev.convention.android.application", version = "unspecified" }
+convention-android-application-compose = { id = "llc.bokadev.convention.android.application.compose", version = "unspecified" }
+convention-cmp-application = { id = "llc.bokadev.convention.cmp.application", version = "unspecified" }
+convention-kmp-library = { id = "llc.bokadev.convention.kmp.library", version = "unspecified" }
+convention-cmp-library = { id = "llc.bokadev.convention.cmp.library", version = "unspecified" }
+convention-cmp-feature = { id = "llc.bokadev.convention.cmp.feature", version = "unspecified" }
+convention-buildkonfig = { id = "llc.bokadev.convention.buildkonfig", version = "unspecified" }
+convention-room = { id = "llc.bokadev.convention.room", version = "unspecified" }
 
 # Android
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -210,5 +214,6 @@ ktor-common = [
     "ktor-client-core",
     "ktor-client-content-negotiation",
     "ktor-serialization-kotlinx-json",
-    "ktor-client-auth"
+    "ktor-client-auth",
+    "ktor-client-logging"
 ]
