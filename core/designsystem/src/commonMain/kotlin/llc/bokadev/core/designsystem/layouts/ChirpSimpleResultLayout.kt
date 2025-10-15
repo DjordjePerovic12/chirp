@@ -1,13 +1,12 @@
 package llc.bokadev.core.designsystem.layouts
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,23 +14,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import chirp.core.designsystem.generated.resources.Res
-import chirp.core.designsystem.generated.resources.check_icon
-import chirp.core.designsystem.generated.resources.success_checkmark
 import llc.bokadev.core.designsystem.components.brand.ChirpSuccessIcon
 import llc.bokadev.core.designsystem.components.buttons.ChirpButton
 import llc.bokadev.core.designsystem.components.buttons.ChirpButtonStyle
 import llc.bokadev.core.designsystem.theme.ChirpTheme
 import llc.bokadev.core.designsystem.theme.extended
-import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ChirpSimpleSuccessLayout(
+fun ChirpSimpleResultLayout(
     title: String,
     description: String,
     icon: @Composable () -> Unit,
-    primaryButton: @Composable () -> Unit,
+    primaryButton: @Composable ColumnScope.() -> Unit,
     secondaryButton: @Composable (() -> Unit)? = null,
     secondaryError: String? = null,
     modifier: Modifier = Modifier
@@ -89,7 +84,7 @@ fun ChirpSimpleSuccessLayout(
 @Preview()
 fun ChirpSimpleSuccessLayoutPreview() {
     ChirpTheme(darkTheme = true) {
-        ChirpSimpleSuccessLayout(
+        ChirpSimpleResultLayout(
             title = "Hello world",
             description = "Helo hello hello",
             icon = {

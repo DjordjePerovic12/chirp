@@ -3,6 +3,7 @@ package llc.bokadev.core.data.auth
 import io.ktor.client.HttpClient
 import llc.bokadev.core.data.dto.requests.EmailRequest
 import llc.bokadev.core.data.dto.requests.RegisterRequest
+import llc.bokadev.core.data.networking.get
 import llc.bokadev.core.data.networking.post
 import llc.bokadev.core.domain.auth.AuthService
 import llc.bokadev.core.domain.util.DataError
@@ -34,6 +35,13 @@ class KtorAuthService(
             body = EmailRequest(
                 email = email
             )
+        )
+    }
+
+    override suspend fun verifyEmail(token: String): EmptyResult<DataError.Remote> {
+        return httpClient.get(
+            route = "/auth/verify",
+            queryParams = mapOf("token" to token)
         )
     }
 }

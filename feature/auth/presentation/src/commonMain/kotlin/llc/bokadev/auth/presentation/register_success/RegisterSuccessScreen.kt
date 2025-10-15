@@ -7,19 +7,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import chirp.feature.auth.presentation.generated.resources.Res
 import chirp.feature.auth.presentation.generated.resources.account_successfully_created
 import chirp.feature.auth.presentation.generated.resources.login
 import chirp.feature.auth.presentation.generated.resources.resend_verification_email
 import chirp.feature.auth.presentation.generated.resources.resent_verification_email
 import chirp.feature.auth.presentation.generated.resources.verification_email_sent_to_x
-import llc.bokadev.core.designsystem.components.brand.ChirpBrandLogo
 import llc.bokadev.core.designsystem.components.brand.ChirpSuccessIcon
 import llc.bokadev.core.designsystem.components.buttons.ChirpButton
 import llc.bokadev.core.designsystem.components.buttons.ChirpButtonStyle
 import llc.bokadev.core.designsystem.layouts.ChirpAdaptiveResultLayout
-import llc.bokadev.core.designsystem.layouts.ChirpSimpleSuccessLayout
+import llc.bokadev.core.designsystem.layouts.ChirpSimpleResultLayout
 import llc.bokadev.core.designsystem.layouts.ChirpSnackbarScaffold
 import llc.bokadev.core.designsystem.theme.ChirpTheme
 import llc.bokadev.core.presentation.util.ObserveAsEvents
@@ -62,7 +60,7 @@ fun RegisterSuccessScreen(
 ) {
     ChirpSnackbarScaffold(snackbarHostState = snackbarHostState) {
         ChirpAdaptiveResultLayout {
-            ChirpSimpleSuccessLayout(
+            ChirpSimpleResultLayout(
                 title = stringResource(Res.string.account_successfully_created),
                 description = stringResource(
                     Res.string.verification_email_sent_to_x,
