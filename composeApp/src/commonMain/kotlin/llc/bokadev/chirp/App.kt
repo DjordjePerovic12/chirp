@@ -19,14 +19,16 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import chirp.composeapp.generated.resources.Res
 import chirp.composeapp.generated.resources.compose_multiplatform
 import llc.bokadev.auth.presentation.register.RegisterRoot
+import llc.bokadev.auth.presentation.register_success.RegisterSuccessRoot
+import llc.bokadev.auth.presentation.register_success.RegisterSuccessScreen
 import llc.bokadev.core.designsystem.theme.ChirpTheme
 
 @Composable
 @Preview
 fun App() {
     ChirpTheme {
-        RegisterRoot(
-            onRegisterSuccess = {}
+        RegisterSuccessRoot(
+
         )
     }
 }
