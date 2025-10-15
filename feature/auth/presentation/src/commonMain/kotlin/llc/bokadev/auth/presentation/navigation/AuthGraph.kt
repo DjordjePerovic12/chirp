@@ -7,6 +7,7 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import llc.bokadev.auth.presentation.email_verification.EmailVerificationRoot
 import llc.bokadev.auth.presentation.email_verification.EmailVerificationScreen
+import llc.bokadev.auth.presentation.login.LoginRoot
 import llc.bokadev.auth.presentation.register.RegisterRoot
 import llc.bokadev.auth.presentation.register_success.RegisterSuccessRoot
 
@@ -16,12 +17,39 @@ fun NavGraphBuilder.authGraph(
     onLoginSuccess: () -> Unit
 ) {
     navigation<AuthGraphRoutes.Graph>(
-        startDestination = AuthGraphRoutes.Register
+        startDestination = AuthGraphRoutes.Login
     ) {
+
+        composable<AuthGraphRoutes.Login> {
+            LoginRoot(
+                onForgotPasswordClick = {
+                    navController.navigate(AuthGraphRoutes.ForgotPassword)
+                },
+                onCreateAccountClick = {
+                    navController.navigate(AuthGraphRoutes.Register) {
+                        restoreState = true
+                        launchSingleTop = true
+                    }
+                },
+                onLoginSuccess = onLoginSuccess
+
+            )
+        }
+
         composable<AuthGraphRoutes.Register> {
             RegisterRoot(
                 onRegisterSuccess = {
                     navController.navigate(AuthGraphRoutes.RegisterSuccess(it))
+                },
+                onLoginClick = {
+                    navController.navigate(AuthGraphRoutes.Login) {
+                        popUpTo(AuthGraphRoutes.Register) {
+                            inclusive = true
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
             )
         }

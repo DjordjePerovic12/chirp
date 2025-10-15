@@ -7,7 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import llc.bokadev.core.designsystem.components.brand.ChirpBrandLogo
-import llc.bokadev.core.designsystem.layouts.ChirpAdaptiveFromLayout
+import llc.bokadev.core.designsystem.layouts.ChirpAdaptiveFormLayout
 import llc.bokadev.core.designsystem.theme.ChirpTheme
 
 @Composable
@@ -18,7 +18,7 @@ import llc.bokadev.core.designsystem.theme.ChirpTheme
 )
 fun ChirpAdaptiveFromLayoutPreview() {
     ChirpTheme {
-        ChirpAdaptiveFromLayout(
+        ChirpAdaptiveFormLayout(
             headerText = "Welcome to Chrip!",
             errorText = "Login failed!",
             logo = {

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
@@ -26,7 +27,8 @@ fun ChirpSnackbarScaffold(
         modifier = modifier,
         contentWindowInsets = WindowInsets.statusBars
             .union(WindowInsets.displayCutout)
-            .union(WindowInsets.ime),
+            .union(WindowInsets.ime)
+            .union(WindowInsets.navigationBars),
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState,

@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,19 +26,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import chirp.core.designsystem.generated.resources.Res
-import chirp.core.designsystem.generated.resources.logo_chirp
 import llc.bokadev.core.designsystem.components.brand.ChirpBrandLogo
 import llc.bokadev.core.designsystem.theme.ChirpTheme
 import llc.bokadev.core.designsystem.theme.extended
 import llc.bokadev.core.presentation.util.DeviceConfiguration
 import llc.bokadev.core.presentation.util.currentDeviceConfiguration
-import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import kotlin.math.log
 
 @Composable
-fun ChirpAdaptiveFromLayout(
+fun ChirpAdaptiveFormLayout(
     headerText: String,
     errorText: String? = null,
     logo: @Composable () -> Unit,
@@ -82,8 +77,10 @@ fun ChirpAdaptiveFromLayout(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = modifier
                     .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
                     .consumeWindowInsets(WindowInsets.displayCutout)
                     .consumeWindowInsets(WindowInsets.navigationBars)
+
             ) {
                 Column(
                     modifier = Modifier
@@ -174,7 +171,7 @@ fun ColumnScope.AuthHeaderSection(
 @Preview
 fun ChirpAdaptiveFromLayoutPreview() {
     ChirpTheme(darkTheme = true) {
-        ChirpAdaptiveFromLayout(
+        ChirpAdaptiveFormLayout(
             headerText = "Welcome to Chrip!",
             errorText = "Login failed!",
             logo = {
