@@ -6,11 +6,11 @@ sealed interface DataError: Error {
         REQUEST_TIMEOUT,
         UNAUTHORIZED,
         FORBIDDEN,
-        MOT_FOUND,
+        NOT_FOUND,
         CONFLICT,
         TOO_MANY_REQUESTS,
         NO_INTERNET,
-        PAYLOAD_TO_LARGE,
+        PAYLOAD_TOO_LARGE,
         SERVER_ERROR,
         SERVICE_UNAVAILABLE,
         SERIALIZATION,
@@ -19,7 +19,8 @@ sealed interface DataError: Error {
 
     enum class Local : DataError {
         DISK_FULL,
-        FILE_NOT_FOUND,
+        NOT_FOUND,
+        UNKNOWN
 
     }
 }
