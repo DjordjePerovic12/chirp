@@ -7,6 +7,7 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import llc.bokadev.auth.presentation.email_verification.EmailVerificationRoot
 import llc.bokadev.auth.presentation.email_verification.EmailVerificationScreen
+import llc.bokadev.auth.presentation.forgot_password.ForgotPasswordRoot
 import llc.bokadev.auth.presentation.login.LoginRoot
 import llc.bokadev.auth.presentation.register.RegisterRoot
 import llc.bokadev.auth.presentation.register_success.RegisterSuccessRoot
@@ -92,6 +93,10 @@ fun NavGraphBuilder.authGraph(
                     }
                 }
             )
+        }
+
+        composable<AuthGraphRoutes.ForgotPassword> {
+            ForgotPasswordRoot()
         }
     }
 }

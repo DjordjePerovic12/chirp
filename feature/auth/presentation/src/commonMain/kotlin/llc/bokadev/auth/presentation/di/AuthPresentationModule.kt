@@ -1,6 +1,7 @@
 package llc.bokadev.auth.presentation.di
 
 import llc.bokadev.auth.presentation.email_verification.EmailVerificationViewModel
+import llc.bokadev.auth.presentation.forgot_password.ForgotPasswordViewModel
 import llc.bokadev.auth.presentation.login.LoginViewModel
 import llc.bokadev.auth.presentation.register.RegisterViewModel
 import llc.bokadev.auth.presentation.register_success.RegisterSuccessViewModel
@@ -12,4 +13,5 @@ val authPresentationModule = module {
     viewModelOf(::RegisterSuccessViewModel)
     viewModelOf(::EmailVerificationViewModel)
     viewModelOf(::LoginViewModel)
+    viewModelOf(::ForgotPasswordViewModel)
 }
