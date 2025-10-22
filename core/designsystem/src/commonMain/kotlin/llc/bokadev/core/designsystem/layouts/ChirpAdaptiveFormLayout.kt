@@ -30,6 +30,7 @@ import llc.bokadev.core.designsystem.components.brand.ChirpBrandLogo
 import llc.bokadev.core.designsystem.theme.ChirpTheme
 import llc.bokadev.core.designsystem.theme.extended
 import llc.bokadev.core.presentation.util.DeviceConfiguration
+import llc.bokadev.core.presentation.util.clearFocusOnTap
 import llc.bokadev.core.presentation.util.currentDeviceConfiguration
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -41,7 +42,7 @@ fun ChirpAdaptiveFormLayout(
     modifier: Modifier = Modifier,
     formContent: @Composable ColumnScope.() -> Unit,
 
-) {
+    ) {
     val configuration = currentDeviceConfiguration()
     val headerColor = if (configuration == DeviceConfiguration.MOBILE_LANDSCAPE) {
         MaterialTheme.colorScheme.onBackground
@@ -53,6 +54,7 @@ fun ChirpAdaptiveFormLayout(
         DeviceConfiguration.MOBILE_PORTRAIT -> {
             ChirpSurface(
                 modifier = modifier
+                    .clearFocusOnTap()
                     .consumeWindowInsets(WindowInsets.navigationBars)
                     .consumeWindowInsets(WindowInsets.displayCutout),
                 header = {
