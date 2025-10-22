@@ -2,8 +2,15 @@ package llc.bokadev.core.domain.auth
 
 import llc.bokadev.core.domain.util.DataError
 import llc.bokadev.core.domain.util.EmptyResult
+import llc.bokadev.core.domain.util.Result
 
 interface AuthService {
+
+    suspend fun login(
+        email: String,
+        password: String
+    ): Result<AuthInfo, DataError.Remote>
+
     suspend fun register(
         email: String,
         username: String,
