@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import llc.bokadev.auth.domain.EmailValidator
 import llc.bokadev.core.domain.auth.AuthService
+import llc.bokadev.core.domain.auth.SessionStorage
 import llc.bokadev.core.domain.util.DataError
 import llc.bokadev.core.domain.util.onFailure
 import llc.bokadev.core.domain.util.onSuccess
@@ -26,7 +27,8 @@ import llc.bokadev.core.presentation.util.UiText
 import llc.bokadev.core.presentation.util.toUiText
 
 class LoginViewModel(
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val sessionStorage: SessionStorage
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -105,6 +107,7 @@ class LoginViewModel(
                     password = password
                 )
                 .onSuccess { authInfo ->
+                    sessionStorage.set(authInfo)
                     _state.update {
                         it.copy(isLoggingIn = false)
                     }
