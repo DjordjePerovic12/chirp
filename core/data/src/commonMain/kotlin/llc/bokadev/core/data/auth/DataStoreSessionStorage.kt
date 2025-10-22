@@ -7,6 +7,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
+import llc.bokadev.core.data.dto.AuthInfoSerializable
+import llc.bokadev.core.data.mappers.toDomain
 import llc.bokadev.core.data.mappers.toSerializable
 import llc.bokadev.core.domain.auth.AuthInfo
 import llc.bokadev.core.domain.auth.SessionStorage
@@ -25,7 +27,7 @@ class DataStoreSessionStorage(
         return dataStore.data.map { preferences ->
             val serializedJson = preferences[authInfoKey]
             serializedJson?.let {
-                json.decodeFromString(it)
+                json.decodeFromString<AuthInfoSerializable>(it).toDomain()
             }
         }
     }
