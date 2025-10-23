@@ -18,6 +18,8 @@ kotlin {
                 implementation(libs.material3.adaptive)
 
                 implementation(compose.components.resources)
+
+                implementation(libs.bundles.koin.common)
             }
         }
 
