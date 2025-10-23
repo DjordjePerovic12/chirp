@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -28,7 +27,6 @@ import llc.bokadev.core.designsystem.components.buttons.ChirpButton
 import llc.bokadev.core.designsystem.theme.ChirpTheme
 import llc.bokadev.core.designsystem.theme.extended
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import kotlin.math.max
 
 @Composable
 fun ChirpMultiLineTextField(
