@@ -54,20 +54,20 @@ fun ChirpStackedAvatarsPreview() {
                 AvatarUi(
                     id = "1",
                     username = "Marie,",
-                    initials = "PH"
+                    initials = "MA"
                 ),
                 AvatarUi(
                     id = "2",
-                    username = "Djordje,",
-                    initials = "DJ"
+                    username = "Tulus,",
+                    initials = "TU"
                 ),AvatarUi(
                     id = "3",
                     username = "Djimba,",
-                    initials = "Tu"
+                    initials = "DJI"
                 ),AvatarUi(
                     id = "4",
-                    username = "Tulus,",
-                    initials = "PH"
+                    username = "Mao,",
+                    initials = "MA"
                 ),
 
             )
