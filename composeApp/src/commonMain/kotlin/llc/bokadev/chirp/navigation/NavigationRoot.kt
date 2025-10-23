@@ -3,11 +3,10 @@ package llc.bokadev.chirp.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import llc.bokadev.auth.presentation.navigation.AuthGraphRoutes
 import llc.bokadev.auth.presentation.navigation.authGraph
-import llc.bokadev.chat.presentation.chat_list.ChatListRoute
-import llc.bokadev.chat.presentation.chat_list.ChatListScreenRoot
+import llc.bokadev.chat.presentation.navigation.ChatGraphRoutes
+import llc.bokadev.chat.presentation.navigation.chatGraph
 
 @Composable
 fun NavigationRoot(
@@ -21,17 +20,13 @@ fun NavigationRoot(
         authGraph(
             navController = navController,
             onLoginSuccess = {
-                navController.navigate(ChatListRoute) {
+                navController.navigate(ChatGraphRoutes.Graph) {
                     popUpTo(AuthGraphRoutes.Graph) {
                         inclusive = true
                     }
                 }
             }
         )
-
-        composable<ChatListRoute> {
-            ChatListScreenRoot()
-        }
-
+        chatGraph(navController = navController)
     }
 }
