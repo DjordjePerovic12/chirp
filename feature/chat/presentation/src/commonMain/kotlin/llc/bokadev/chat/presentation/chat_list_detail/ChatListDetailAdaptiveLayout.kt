@@ -1,5 +1,6 @@
 package llc.bokadev.chat.presentation.chat_list_detail
 
+import DialogSheetScopedViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -26,6 +27,7 @@ import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
+import llc.bokadev.chat.presentation.create_chat.CreateChatRoot
 import llc.bokadev.core.designsystem.theme.extended
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -59,6 +61,7 @@ fun ChatListDetailsAdaptiveLayout(
                         Text(
                             text = "CHAT $chatIndex",
                             modifier = Modifier.clickable {
+                                chatListDetailViewModel.onAction(ChatListDetailsAction.OnCreateChatClick)
                                 chatListDetailViewModel.onAction(
                                     ChatListDetailsAction.OnChatClick(
                                         chatIndex.toString()
@@ -89,4 +92,10 @@ fun ChatListDetailsAdaptiveLayout(
             }
         }
     )
+
+    DialogSheetScopedViewModel(
+        visible = sharedState.dialogState is DialogState.CreateChat
+    ) {
+        CreateChatRoot()
+    }
 }
