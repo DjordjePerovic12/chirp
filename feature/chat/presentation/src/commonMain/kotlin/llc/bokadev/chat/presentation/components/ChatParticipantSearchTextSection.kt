@@ -34,7 +34,7 @@ fun ChatParticipantSearchTextSection(
                 vertical = 16.dp,
                 horizontal = 20.dp
             ),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         ChirpTextField(

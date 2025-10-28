@@ -1,6 +1,7 @@
 package llc.bokadev.chirp.di
 
 import llc.bokadev.auth.presentation.di.authPresentationModule
+import llc.bokadev.chat.data.di.chatDataModule
 import llc.bokadev.chat.presentation.di.chatPresentationModule
 import llc.bokadev.core.data.di.coreDataModule
 import llc.bokadev.core.presentation.di.corePresentationModule
@@ -15,7 +16,8 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             authPresentationModule,
             appModule,
             chatPresentationModule,
-            corePresentationModule
+            corePresentationModule,
+            chatDataModule
         )
     }
 }
