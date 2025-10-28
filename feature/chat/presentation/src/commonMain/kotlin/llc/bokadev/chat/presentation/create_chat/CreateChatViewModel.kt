@@ -7,16 +7,19 @@ import androidx.lifecycle.viewModelScope
 import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.error_participant_not_found
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import llc.bokadev.chat.domain.chat.ChatParticipantService
+import llc.bokadev.chat.domain.chat.ChatService
 import llc.bokadev.chat.presentation.mappers.toUi
 import llc.bokadev.core.domain.util.DataError
 import llc.bokadev.core.domain.util.onFailure
@@ -26,13 +29,17 @@ import llc.bokadev.core.presentation.util.toUiText
 import kotlin.time.Duration.Companion.seconds
 
 class CreateChatViewModel(
-    private val chatParticipantService: ChatParticipantService
+    private val chatParticipantService: ChatParticipantService,
+    private val chatService: ChatService
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
 
 
     private val _state = MutableStateFlow(CreateChatState())
+
+    private val eventChannel = Channel<CreateChatEvent>()
+    val events = eventChannel.receiveAsFlow()
 
     @OptIn(FlowPreview::class)
     private val searchFlow = snapshotFlow { _state.value.queryTextState.text.toString() }
@@ -58,11 +65,45 @@ class CreateChatViewModel(
     fun onAction(action: CreateChatAction) {
         when (action) {
             CreateChatAction.OnAddClick -> addParticipant()
-            CreateChatAction.OnCreateChatClick -> {
+            CreateChatAction.OnCreateChatClick -> createChat()
+            else -> Unit
+        }
+    }
 
+    private fun createChat() {
+        val userIds = state.value.selectedChatParticipants.map { it.id }
+
+        if (userIds.isEmpty()) {
+            return
+        }
+
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isLoadingParticipants = true,
+                    canAddParticipant = false
+                )
             }
 
-            CreateChatAction.OnDismissDialog -> Unit
+            chatService.createChat(
+                otherUserIds = userIds
+            )
+                .onSuccess { chat ->
+                    _state.update {
+                        it.copy(
+                            isCreatingChat = false
+                        )
+                    }
+                    eventChannel.send(CreateChatEvent.OnChatCreated(chat))
+                }
+                .onFailure { error ->
+                    _state.update {
+                        it.copy(
+                            createChatError = error.toUiText(),
+                            canAddParticipant = it.currentSearchResult != null && !it.isSearchingParticipants
+                        )
+                    }
+                }
         }
     }
 

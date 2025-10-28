@@ -21,7 +21,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import chirp.feature.chat.presentation.generated.resources.Res
+import chirp.feature.chat.presentation.generated.resources.cancel
 import chirp.feature.chat.presentation.generated.resources.create_chat
+import llc.bokadev.chat.domain.models.Chat
 import llc.bokadev.chat.presentation.components.ChatParticipantSearchTextSection
 import llc.bokadev.chat.presentation.components.ChatParticipantsSelectionSection
 import llc.bokadev.chat.presentation.components.ManageChatButtonSection
@@ -32,6 +34,7 @@ import llc.bokadev.core.designsystem.components.buttons.ChirpButtonStyle
 import llc.bokadev.core.designsystem.components.dialogs.ChirpAdaptiveDialogSheetLayout
 import llc.bokadev.core.designsystem.theme.ChirpTheme
 import llc.bokadev.core.presentation.util.DeviceConfiguration
+import llc.bokadev.core.presentation.util.ObserveAsEvents
 import llc.bokadev.core.presentation.util.clearFocusOnTap
 import llc.bokadev.core.presentation.util.currentDeviceConfiguration
 import org.jetbrains.compose.resources.stringResource
@@ -41,9 +44,17 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun CreateChatRoot(
     onDismiss: () -> Unit,
+    onChatCreated: (Chat) -> Unit,
     viewModel: CreateChatViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is CreateChatEvent.OnChatCreated -> onChatCreated(event.chat)
+        }
+    }
+
 
     ChirpAdaptiveDialogSheetLayout(
         onDismiss = onDismiss
@@ -129,13 +140,14 @@ fun CreateChatScreen(
             },
             secondaryButton = {
                 ChirpButton(
-                    text = stringResource(Res.string.create_chat),
+                    text = stringResource(Res.string.cancel),
                     onClick = {
                         onAction(CreateChatAction.OnCreateChatClick)
                     },
                     style = ChirpButtonStyle.SECONDARY
                 )
             },
+            error = state.createChatError?.asString(),
             modifier = Modifier.fillMaxWidth()
         )
     }
