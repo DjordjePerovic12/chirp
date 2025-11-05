@@ -25,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.cancel
 import chirp.feature.chat.presentation.generated.resources.create_chat
@@ -47,7 +46,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ChatListScreenRoot(
-    viewModel: ChatListScreenViewModel = koinViewModel(),
+    viewModel: ChatListViewModel = koinViewModel(),
     onChatClick: (ChatUi) -> Unit,
     onConfirmLogoutClick: () -> Unit,
     onCreateChatClick: () -> Unit,
@@ -62,10 +61,10 @@ fun ChatListScreenRoot(
         state = state,
         onAction = { action ->
             when (action) {
-                is ChatListScreenAction.OnChatClick -> onChatClick(action.chat)
-                ChatListScreenAction.OnConfirmLogout -> onConfirmLogoutClick()
-                ChatListScreenAction.OnCreateChatClick -> onCreateChatClick()
-                ChatListScreenAction.OnProfileSettingsClick -> onProfileSettingsClick()
+                is ChatListAction.OnChatClick -> onChatClick(action.chat)
+                ChatListAction.OnConfirmLogout -> onConfirmLogoutClick()
+                ChatListAction.OnCreateChatClick -> onCreateChatClick()
+                ChatListAction.OnProfileSettingsClick -> onProfileSettingsClick()
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -76,8 +75,8 @@ fun ChatListScreenRoot(
 
 @Composable
 fun ChatListScreen(
-    state: ChatListScreenState,
-    onAction: (ChatListScreenAction) -> Unit,
+    state: ChatListState,
+    onAction: (ChatListAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
     Scaffold(
@@ -88,7 +87,7 @@ fun ChatListScreen(
         floatingActionButton = {
             ChirpFloatingActionButton(
                 onClick = {
-                    onAction(ChatListScreenAction.OnCreateChatClick)
+                    onAction(ChatListAction.OnCreateChatClick)
                 },
                 content = {
                     Icon(
@@ -110,16 +109,16 @@ fun ChatListScreen(
                 localParticipant = state.localParticipant,
                 isUserMenuOpen = state.isUserMenuOpen,
                 onUserAvatarClick = {
-                    onAction(ChatListScreenAction.OnUserAvatarClick)
+                    onAction(ChatListAction.OnUserAvatarClick)
                 },
                 onLogoutClick = {
-                    onAction(ChatListScreenAction.OnLogoutClick)
+                    onAction(ChatListAction.OnLogoutClick)
                 },
                 onDismissMenu = {
-                    onAction(ChatListScreenAction.OnDismissUserMenu)
+                    onAction(ChatListAction.OnDismissUserMenu)
                 },
                 onProfileSettingsClick = {
-                    onAction(ChatListScreenAction.OnProfileSettingsClick)
+                    onAction(ChatListAction.OnProfileSettingsClick)
                 }
             )
             when {
@@ -153,7 +152,7 @@ fun ChatListScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
-                                        onAction(ChatListScreenAction.OnChatClick(chatUi))
+                                        onAction(ChatListAction.OnChatClick(chatUi))
                                     }
                             )
                             ChirpHorizontalDivider()
@@ -170,13 +169,13 @@ fun ChatListScreen(
             confirmButtonText = stringResource(Res.string.logout),
             cancelButtonText = stringResource(Res.string.cancel),
             onCancelClick = {
-                onAction(ChatListScreenAction.OnDismissLogout)
+                onAction(ChatListAction.OnDismissLogout)
             },
             onConfirmClick = {
-                onAction(ChatListScreenAction.OnConfirmLogout)
+                onAction(ChatListAction.OnConfirmLogout)
             },
             onDismiss = {
-                onAction(ChatListScreenAction.OnDismissLogout)
+                onAction(ChatListAction.OnDismissLogout)
             }
         )
     }
@@ -187,7 +186,7 @@ fun ChatListScreen(
 private fun Preview() {
     ChirpTheme {
         ChatListScreen(
-            state = ChatListScreenState(),
+            state = ChatListState(),
             onAction = {},
             snackbarHostState = remember { SnackbarHostState() }
         )

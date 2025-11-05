@@ -7,11 +7,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 
-class ChatListScreenViewModel : ViewModel() {
+class ChatListViewModel : ViewModel() {
 
     private var hasLoadedInitialData = false
 
-    private val _state = MutableStateFlow(ChatListScreenState())
+    private val _state = MutableStateFlow(ChatListState())
     val state = _state
         .onStart {
             if (!hasLoadedInitialData) {
@@ -22,10 +22,10 @@ class ChatListScreenViewModel : ViewModel() {
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = ChatListScreenState()
+            initialValue = ChatListState()
         )
 
-    fun onAction(action: ChatListScreenAction) {
+    fun onAction(action: ChatListAction) {
         when (action) {
             else -> Unit
         }
