@@ -28,6 +28,7 @@ import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.group_chat
 import chirp.feature.chat.presentation.generated.resources.you
 import llc.bokadev.chat.domain.models.ChatMessage
+import llc.bokadev.chat.presentation.components.ChatItemHeaderRow
 import llc.bokadev.chat.presentation.model.ChatUi
 import llc.bokadev.core.designsystem.components.avatar.ChatParticipantUi
 import llc.bokadev.core.designsystem.components.avatar.ChirpStackedAvatars
@@ -57,48 +58,11 @@ fun ChatListItemUI(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                ChirpStackedAvatars(
-                    avatars = chat.otherParticipants
-                )
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Text(
-                        text = if (chat.otherParticipants.size == 1) {
-                            chat.otherParticipants.first().username
-                        } else {
-                            stringResource(Res.string.group_chat)
-                        },
-                        style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.extended.textPrimary,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    if (isGroupChat) {
-                        val you = stringResource(Res.string.you)
-                        val formattedUsers = remember(chat.otherParticipants) {
-                            "$you, " + chat.otherParticipants.joinToString() {
-                                it.username
-                            }
-                        }
-                        Text(
-                            text = formattedUsers,
-                            color = MaterialTheme.colorScheme.extended.textPlaceholder,
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.fillMaxWidth(),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
-                }
-            }
+            ChatItemHeaderRow(
+                chat = chat,
+                isGroupChat = isGroupChat,
+                modifier = Modifier.fillMaxWidth()
+            )
             if (chat.lastMessage != null) {
                 val previewMessage = buildAnnotatedString {
                     withStyle(

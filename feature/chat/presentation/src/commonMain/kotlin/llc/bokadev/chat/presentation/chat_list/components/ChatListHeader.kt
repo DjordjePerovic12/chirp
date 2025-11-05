@@ -30,7 +30,10 @@ import llc.bokadev.chat.presentation.components.ChatHeader
 import llc.bokadev.core.designsystem.components.avatar.ChatParticipantUi
 import llc.bokadev.core.designsystem.components.avatar.ChirpAvatarPhoto
 import llc.bokadev.core.designsystem.components.brand.ChirpHorizontalDivider
+import llc.bokadev.core.designsystem.components.dropdowns.ChirpDropDownMenu
+import llc.bokadev.core.designsystem.components.dropdowns.DropDownItem
 import llc.bokadev.core.designsystem.theme.extended
+import org.jetbrains.compose.resources.imageResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -94,64 +97,23 @@ fun ProfileAvatarSection(
                 onClick = onClick
             )
         }
-
-        DropdownMenu(
-            expanded = isMenuOpen,
-            onDismissRequest = onDismissMenu,
-            containerColor = MaterialTheme.colorScheme.surface,
-            shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.extended.surfaceOutline
+        ChirpDropDownMenu(
+            isOpen = isMenuOpen,
+            onDismiss = onDismissMenu,
+            items = listOf(
+                DropDownItem(
+                    title = stringResource(Res.string.profile_setting),
+                    icon = vectorResource(DesignSystemRes.drawable.users_icon),
+                    contentColor = MaterialTheme.colorScheme.extended.textSecondary,
+                    onClick = onProfileSettingsClick
+                ),
+                DropDownItem(
+                    title = stringResource(Res.string.logout),
+                    icon = vectorResource(DesignSystemRes.drawable.log_out_icon),
+                    contentColor = MaterialTheme.colorScheme.extended.destructiveHover,
+                    onClick = onLogoutClick
+                ),
             )
-        ) {
-            DropdownMenuItem(
-                text = {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Icon(
-                            imageVector = vectorResource(DesignSystemRes.drawable.users_icon),
-                            contentDescription = stringResource(Res.string.profile_setting),
-                            tint = MaterialTheme.colorScheme.extended.textSecondary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(
-                            text = stringResource(Res.string.profile_setting),
-                            color = MaterialTheme.colorScheme.extended.textSecondary,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                },
-                onClick = {
-                    onDismissMenu()
-                    onProfileSettingsClick()
-                }
-            )
-            ChirpHorizontalDivider()
-            DropdownMenuItem(
-                text = {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Icon(
-                            imageVector = vectorResource(DesignSystemRes.drawable.log_out_icon),
-                            contentDescription = stringResource(Res.string.logout),
-                            tint = MaterialTheme.colorScheme.extended.destructiveHover,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(
-                            text = stringResource(Res.string.logout),
-                            color = MaterialTheme.colorScheme.extended.destructiveHover,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                },
-                onClick = {
-                    onDismissMenu()
-                    onLogoutClick()
-                }
-            )
-        }
+        )
     }
 }
