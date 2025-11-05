@@ -1,4 +1,4 @@
-package llc.bokadev.chat.presentation.chat_list
+package llc.bokadev.chat.presentation.chat_list.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

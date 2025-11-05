@@ -33,6 +33,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.create_chat
 import kotlinx.coroutines.launch
+import llc.bokadev.chat.presentation.chat_list.ChatListScreenAction
+import llc.bokadev.chat.presentation.chat_list.ChatListScreenRoot
 import llc.bokadev.chat.presentation.create_chat.CreateChatRoot
 import llc.bokadev.core.designsystem.components.buttons.ChirpFloatingActionButton
 import llc.bokadev.core.designsystem.theme.extended
@@ -43,6 +45,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ChatListDetailsAdaptiveLayout(
     chatListDetailViewModel: ChatListDetailViewModel = koinViewModel(),
+    onLogout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val sharedState by chatListDetailViewModel.state.collectAsStateWithLifecycle()
@@ -64,44 +67,23 @@ fun ChatListDetailsAdaptiveLayout(
             .background(MaterialTheme.colorScheme.extended.surfaceLower),
         listPane = {
             AnimatedPane {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    floatingActionButton = {
-                        ChirpFloatingActionButton(
-                            onClick = {
-                                chatListDetailViewModel.onAction(ChatListDetailsAction.OnCreateChatClick)
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = stringResource(Res.string.create_chat)
+                ChatListScreenRoot(
+                    onChatClick = {
+                        chatListDetailViewModel.onAction(ChatListDetailsAction.OnChatClick(it.id))
+                        scope.launch {
+                            scaffoldNavigator.navigateTo(
+                                ListDetailPaneScaffoldRole.Detail
                             )
                         }
+                    },
+                    onConfirmLogoutClick = onLogout,
+                    onCreateChatClick = {
+                        chatListDetailViewModel.onAction(ChatListDetailsAction.OnCreateChatClick)
+                    },
+                    onProfileSettingsClick = {
+                        chatListDetailViewModel.onAction(ChatListDetailsAction.OnProfileSettingsClick)
                     }
-                ) { innerPadding ->
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = innerPadding
-                    ) {
-                        items(100) { chatIndex ->
-                            Text(
-                                text = "CHAT $chatIndex",
-                                modifier = Modifier.clickable {
-                                    chatListDetailViewModel.onAction(ChatListDetailsAction.OnCreateChatClick)
-                                    chatListDetailViewModel.onAction(
-                                        ChatListDetailsAction.OnChatClick(
-                                            chatIndex.toString()
-                                        )
-                                    )
-                                    scope.launch {
-                                        scaffoldNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
-                                    }
-                                }
-                                    .padding(16.dp)
-                            )
-                        }
-                    }
-                }
+                )
             }
         },
         detailPane = {
