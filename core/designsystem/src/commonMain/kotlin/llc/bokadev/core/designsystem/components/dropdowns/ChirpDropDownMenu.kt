@@ -14,13 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import chirp.core.designsystem.generated.resources.Res
-import chirp.core.designsystem.generated.resources.log_out_icon
-import chirp.core.designsystem.generated.resources.users_icon
 import llc.bokadev.core.designsystem.components.brand.ChirpHorizontalDivider
 import llc.bokadev.core.designsystem.theme.extended
-import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun ChirpDropDownMenu(
