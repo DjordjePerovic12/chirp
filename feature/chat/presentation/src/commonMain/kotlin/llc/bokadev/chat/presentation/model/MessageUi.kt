@@ -4,24 +4,24 @@ import llc.bokadev.chat.domain.models.ChatMessageDeliveryStatus
 import llc.bokadev.core.designsystem.components.avatar.ChatParticipantUi
 import llc.bokadev.core.presentation.util.UiText
 
-sealed interface MessageUi {
+sealed class MessageUi(open val id: String) {
     data class LocalUserMessage(
-        val id: String,
+        override val id: String,
         val content: String,
         val deliveryStatus: ChatMessageDeliveryStatus,
         val formattedSentTime: UiText,
         val isMenuOpen: Boolean
-    ) : MessageUi
+    ) : MessageUi(id = id)
 
     data class OtherUserMessage(
-        val id: String,
+        override val id: String,
         val content: String,
         val formattedSentTime: UiText,
         val sender: ChatParticipantUi
-    ) : MessageUi
+    ) : MessageUi(id = id)
 
     data class DateSeparator(
-        val id: String,
+        override val id: String,
         val date: UiText,
-    ) : MessageUi
+    ) : MessageUi(id = id)
 }

@@ -22,35 +22,41 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun MessageListItemUi(
-    messageUi: MessageUi,
-    onMessageLongClick: () -> Unit,
+    message: MessageUi,
+    onMessageLongClick: (MessageUi.LocalUserMessage) -> Unit,
     onDismissDeleteMessageMenu: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onRetryClick: () -> Unit,
+    onDeleteClick: (MessageUi.LocalUserMessage) -> Unit,
+    onRetryClick: (MessageUi.LocalUserMessage) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
-        when (messageUi) {
+        when (message) {
             is MessageUi.DateSeparator -> {
                 DataSeparatorUi(
-                    date = messageUi.date.asString(),
+                    date = message.date.asString(),
                     modifier = Modifier.fillMaxWidth()
                 )
             }
 
             is MessageUi.LocalUserMessage -> {
                 LocalUserMessage(
-                    message = messageUi,
-                    onMessageLongClick = onMessageLongClick,
+                    message = message,
+                    onMessageLongClick = {
+                        onMessageLongClick(message)
+                    },
                     onDismissDeleteMessageMenu = onDismissDeleteMessageMenu,
-                    onDeleteClick = onDeleteClick,
-                    onRetryClick = onRetryClick
+                    onDeleteClick = {
+                        onDeleteClick(message)
+                    },
+                    onRetryClick = {
+                        onRetryClick(message)
+                    }
                 )
             }
 
             is MessageUi.OtherUserMessage -> {
                 OtherUserMessage(
-                    message = messageUi
+                    message = message
                 )
             }
         }
@@ -84,7 +90,7 @@ private fun DataSeparatorUi(
 fun MessageListItemLocalMessageUiPreview() {
     ChirpTheme {
         MessageListItemUi(
-            messageUi = MessageUi.LocalUserMessage(
+            message = MessageUi.LocalUserMessage(
                 id = "1",
                 content = "Hello world, this is a preview message that spans multiple lines",
                 deliveryStatus = ChatMessageDeliveryStatus.SENT,
@@ -107,7 +113,7 @@ fun MessageListItemLocalMessageUiPreview() {
 fun MessageListItemLocalMessageRetryUiPreview() {
     ChirpTheme {
         MessageListItemUi(
-            messageUi = MessageUi.LocalUserMessage(
+            message = MessageUi.LocalUserMessage(
                 id = "1",
                 content = "Hello world, this is a preview message that spans multiple lines",
                 deliveryStatus = ChatMessageDeliveryStatus.FAILED,
@@ -129,7 +135,7 @@ fun MessageListItemLocalMessageRetryUiPreview() {
 fun MessageListItemOtherMessageUiPreview() {
     ChirpTheme {
         MessageListItemUi(
-            messageUi = MessageUi.OtherUserMessage(
+            message = MessageUi.OtherUserMessage(
                 id = "1",
                 content = "Hello world, this is a preview message that spans multiple lines",
                 formattedSentTime = UiText.DynamicString("Friday 2:20pm"),
