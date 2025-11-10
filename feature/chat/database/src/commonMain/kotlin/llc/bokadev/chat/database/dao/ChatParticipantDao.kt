@@ -1,9 +1,11 @@
 package llc.bokadev.chat.database.dao
 
+import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import llc.bokadev.chat.database.entities.ChatParticipantEntity
 
+@Dao
 interface ChatParticipantDao {
 
     @Upsert

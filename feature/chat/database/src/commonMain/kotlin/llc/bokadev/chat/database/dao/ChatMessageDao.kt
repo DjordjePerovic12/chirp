@@ -1,10 +1,12 @@
 package llc.bokadev.chat.database.dao
 
+import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 import llc.bokadev.chat.database.entities.ChatMessageEntity
 
+@Dao
 interface ChatMessageDao {
 
     @Upsert
