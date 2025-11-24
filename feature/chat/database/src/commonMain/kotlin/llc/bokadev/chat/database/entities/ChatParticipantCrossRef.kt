@@ -2,6 +2,7 @@ package llc.bokadev.chat.database.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     primaryKeys = ["chatId", "userId"],
@@ -17,7 +18,10 @@ import androidx.room.ForeignKey
             parentColumns = ["userId"],
             childColumns = ["userId"]
         ),
-
+    ],
+    indices = [
+        Index(value = ["chatId"]),
+        Index(value = ["userId"]),
     ]
 )
 data class ChatParticipantCrossRef(
