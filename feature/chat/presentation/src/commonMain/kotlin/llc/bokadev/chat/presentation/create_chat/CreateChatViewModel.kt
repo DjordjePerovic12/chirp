@@ -127,49 +127,41 @@ class CreateChatViewModel(
 
     private fun performSearch(query: String) {
         if (query.isBlank()) {
-            _state.update {
-                it.copy(
-                    currentSearchResult = null,
-                    canAddParticipant = false,
-                    searchError = null
-                )
-            }
+            _state.update { it.copy(
+                currentSearchResult = null,
+                canAddParticipant = false,
+                searchError = null
+            ) }
             return
         }
+
         viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    isSearchingParticipants = true,
-                    canAddParticipant = false
-                )
-            }
+            _state.update { it.copy(
+                isSearchingParticipants = true,
+                canAddParticipant = false
+            ) }
 
             chatParticipantService
                 .searchParticipant(query)
                 .onSuccess { participant ->
-                    _state.update {
-                        it.copy(
-                            currentSearchResult = participant.toUi(),
-                            isSearchingParticipants = false,
-                            canAddParticipant = true,
-                            searchError = null
-                        )
-                    }
+                    _state.update { it.copy(
+                        currentSearchResult = participant.toUi(),
+                        isSearchingParticipants = false,
+                        canAddParticipant = true,
+                        searchError = null
+                    ) }
                 }
                 .onFailure { error ->
-                    val errorMessage = when (error) {
+                    val errorMessage = when(error) {
                         DataError.Remote.NOT_FOUND -> UiText.Resource(Res.string.error_participant_not_found)
                         else -> error.toUiText()
                     }
-                    _state.update {
-                        it.copy(
-                            searchError = errorMessage,
-                            isSearchingParticipants = false,
-                            canAddParticipant = false,
-                            currentSearchResult = null
-
-                        )
-                    }
+                    _state.update { it.copy(
+                        searchError = errorMessage,
+                        isSearchingParticipants = false,
+                        canAddParticipant = false,
+                        currentSearchResult = null
+                    ) }
                 }
         }
     }

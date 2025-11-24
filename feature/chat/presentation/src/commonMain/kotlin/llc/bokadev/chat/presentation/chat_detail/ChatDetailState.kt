@@ -18,7 +18,7 @@ data class ChatDetailState(
     val endReached: Boolean = false,
     val isChatOptionsOpen: Boolean = false,
     val isNearBottom: Boolean = false,
-    val connectionState: ConnectionState = ConnectionState.CONNECTED
+    val connectionState: ConnectionState = ConnectionState.DISCONNECTED
 
 )
 

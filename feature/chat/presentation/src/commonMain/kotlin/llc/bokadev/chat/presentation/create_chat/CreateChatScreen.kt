@@ -142,7 +142,7 @@ fun CreateChatScreen(
                 ChirpButton(
                     text = stringResource(Res.string.cancel),
                     onClick = {
-                        onAction(CreateChatAction.OnCreateChatClick)
+                        onAction(CreateChatAction.OnDismissDialog)
                     },
                     style = ChirpButtonStyle.SECONDARY
                 )
