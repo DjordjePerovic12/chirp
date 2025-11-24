@@ -1,11 +1,13 @@
 package llc.bokadev.chat.data.chat
 
 import io.ktor.client.HttpClient
+import io.ktor.client.request.get
 import llc.bokadev.chat.data.dto.ChatDto
 import llc.bokadev.chat.data.dto.request.CreateChatRequest
 import llc.bokadev.chat.data.mappers.toDomain
 import llc.bokadev.chat.domain.chat.ChatService
 import llc.bokadev.chat.domain.models.Chat
+import llc.bokadev.core.data.networking.get
 import llc.bokadev.core.data.networking.post
 import llc.bokadev.core.domain.util.DataError
 import llc.bokadev.core.domain.util.Result
@@ -21,5 +23,13 @@ class KtorChatService(
                 otherUserIds = otherUserIds
             )
         ).map { it.toDomain() }
+    }
+
+    override suspend fun getChats(): Result<List<Chat>, DataError.Remote> {
+        return httpClient.get<List<ChatDto>>(
+            route = "/chat"
+        ).map { chatDtos ->
+            chatDtos.map { it.toDomain() }
+        }
     }
 }

@@ -26,7 +26,7 @@ import llc.bokadev.chat.database.view.LastMessageView
 )
 
 abstract class ChirpChatDatabase : RoomDatabase() {
-    abstract val chaDao: ChatDao
+    abstract val chatDao: ChatDao
     abstract val chatParticipantDao: ChatParticipantDao
     abstract val chatMessageDao: ChatMessageDao
     abstract val chatParticipantsCrossRefDao: ChatParticipantsCrossRefDao

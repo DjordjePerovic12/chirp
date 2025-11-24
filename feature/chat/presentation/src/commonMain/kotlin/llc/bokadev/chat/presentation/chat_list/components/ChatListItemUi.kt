@@ -28,6 +28,7 @@ import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.group_chat
 import chirp.feature.chat.presentation.generated.resources.you
 import llc.bokadev.chat.domain.models.ChatMessage
+import llc.bokadev.chat.domain.models.ChatMessageDeliveryStatus
 import llc.bokadev.chat.presentation.components.ChatItemHeaderRow
 import llc.bokadev.chat.presentation.model.ChatUi
 import llc.bokadev.core.designsystem.components.avatar.ChatParticipantUi
@@ -71,7 +72,7 @@ fun ChatListItemUI(
                             color = MaterialTheme.colorScheme.extended.textSecondary
                         )
                     ) {
-                        append(chat.lastMessageSenderUsername + ":")
+                        append(chat.lastMessageSenderUsername + ": ")
                     }
                     append(chat.lastMessage.content)
                 }
@@ -131,7 +132,8 @@ fun ChatListItemUiPreview() {
                     chatId = "1",
                     content = "Donesite mi plazmu, i cokoladu, i igracke",
                     createdAt = Instant.fromEpochMilliseconds(10000000),
-                    senderId = "2"
+                    senderId = "2",
+                    deliveryStatus = ChatMessageDeliveryStatus.SENT
                 ),
                 lastMessageSenderUsername = "Djimba"
             ),
