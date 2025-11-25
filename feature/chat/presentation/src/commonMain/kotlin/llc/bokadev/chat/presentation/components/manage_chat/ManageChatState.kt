@@ -1,11 +1,12 @@
-package llc.bokadev.chat.presentation.create_chat
+package llc.bokadev.chat.presentation.components.manage_chat
 
 import androidx.compose.foundation.text.input.TextFieldState
 import llc.bokadev.core.designsystem.components.avatar.ChatParticipantUi
 import llc.bokadev.core.presentation.util.UiText
 
-data class CreateChatState(
+data class ManageChatState(
     val queryTextState: TextFieldState = TextFieldState(),
+    val existingChatParticipants: List<ChatParticipantUi> = emptyList(),
     val selectedChatParticipants: List<ChatParticipantUi> = emptyList(),
     val isSearchingParticipants: Boolean = false,
     val isLoadingParticipants: Boolean = false,

@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import llc.bokadev.chat.presentation.chat_detail.ChatDetailRoot
 import llc.bokadev.chat.presentation.chat_list.ChatListScreenRoot
 import llc.bokadev.chat.presentation.create_chat.CreateChatRoot
+import llc.bokadev.chat.presentation.manage_chat.ManageChatRoot
 import llc.bokadev.core.designsystem.theme.extended
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -86,6 +87,9 @@ fun ChatListDetailsAdaptiveLayout(
                 ChatDetailRoot(
                     chatId = sharedState.selectedChatId,
                     isDetailsPresent = detailPane == PaneAdaptedValue.Expanded && listPane == PaneAdaptedValue.Expanded,
+                    onChatMembersClick = {
+                        chatListDetailViewModel.onAction(ChatListDetailsAction.OnManageClick)
+                    },
                     onBack = {
                         scope.launch {
                             if (scaffoldNavigator.canNavigateBack()) {
@@ -111,6 +115,19 @@ fun ChatListDetailsAdaptiveLayout(
                 scope.launch {
                     scaffoldNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                 }
+            }
+        )
+    }
+
+    DialogSheetScopedViewModel(
+        visible = sharedState.dialogState is DialogState.ManageChat
+    ) {
+        ManageChatRoot(
+            onDismiss = {
+                chatListDetailViewModel.onAction(ChatListDetailsAction.OnDismissCurrentDialog)
+            },
+            onMembersAdded = {
+                chatListDetailViewModel.onAction(ChatListDetailsAction.OnDismissCurrentDialog)
             }
         )
     }

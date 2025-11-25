@@ -20,7 +20,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import llc.bokadev.chat.domain.chat.ChatParticipantService
 import llc.bokadev.chat.domain.chat.ChatRepository
-import llc.bokadev.chat.domain.chat.ChatService
+import llc.bokadev.chat.presentation.components.manage_chat.ManageChatAction
+import llc.bokadev.chat.presentation.components.manage_chat.ManageChatState
 import llc.bokadev.chat.presentation.mappers.toUi
 import llc.bokadev.core.domain.util.DataError
 import llc.bokadev.core.domain.util.onFailure
@@ -37,7 +38,7 @@ class CreateChatViewModel(
     private var hasLoadedInitialData = false
 
 
-    private val _state = MutableStateFlow(CreateChatState())
+    private val _state = MutableStateFlow(ManageChatState())
 
     private val eventChannel = Channel<CreateChatEvent>()
     val events = eventChannel.receiveAsFlow()
@@ -60,13 +61,13 @@ class CreateChatViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = CreateChatState()
+            initialValue = ManageChatState()
         )
 
-    fun onAction(action: CreateChatAction) {
+    fun onAction(action: ManageChatAction) {
         when (action) {
-            CreateChatAction.OnAddClick -> addParticipant()
-            CreateChatAction.OnCreateChatClick -> createChat()
+            ManageChatAction.OnAddClick -> addParticipant()
+            ManageChatAction.OnPrimaryActionClick -> createChat()
             else -> Unit
         }
     }

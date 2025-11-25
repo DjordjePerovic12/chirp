@@ -60,6 +60,7 @@ fun ChatDetailRoot(
     chatId: String?,
     isDetailsPresent: Boolean,
     onBack: () -> Unit,
+    onChatMembersClick: () -> Unit,
     viewModel: ChatDetailViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -67,7 +68,7 @@ fun ChatDetailRoot(
     val snackbarState = remember { SnackbarHostState() }
 
     ObserveAsEvents(viewModel.events) { event ->
-        when(event) {
+        when (event) {
             ChatDetailEvent.OnChatLeft -> onBack()
             is ChatDetailEvent.OnError -> {
                 snackbarState.showSnackbar(event.error.asStringAsync())
@@ -90,7 +91,13 @@ fun ChatDetailRoot(
         state = state,
         isDetailsPresent = isDetailsPresent,
         snackbarState = snackbarState,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                is ChatDetailAction.OnChatMembersClick -> onChatMembersClick()
+                else -> Unit
+            }
+            viewModel.onAction(action)
+        }
     )
 }
 
@@ -255,7 +262,7 @@ private fun ChatDetailEmptyPreview() {
             state = ChatDetailState(),
             isDetailsPresent = false,
             onAction = {},
-           snackbarState =  remember { SnackbarHostState() }
+            snackbarState = remember { SnackbarHostState() }
         )
     }
 }
