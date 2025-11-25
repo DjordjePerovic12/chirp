@@ -7,10 +7,13 @@ import llc.bokadev.chat.data.dto.request.CreateChatRequest
 import llc.bokadev.chat.data.mappers.toDomain
 import llc.bokadev.chat.domain.chat.ChatService
 import llc.bokadev.chat.domain.models.Chat
+import llc.bokadev.core.data.networking.delete
 import llc.bokadev.core.data.networking.get
 import llc.bokadev.core.data.networking.post
 import llc.bokadev.core.domain.util.DataError
+import llc.bokadev.core.domain.util.EmptyResult
 import llc.bokadev.core.domain.util.Result
+import llc.bokadev.core.domain.util.asEmptyResult
 import llc.bokadev.core.domain.util.map
 
 class KtorChatService(
@@ -37,5 +40,11 @@ class KtorChatService(
         return httpClient.get<ChatDto>(
             route = "/chat/$chatId"
         ).map { it.toDomain() }
+    }
+
+    override suspend fun leaveChat(chatId: String): EmptyResult<DataError.Remote> {
+        return httpClient.delete<Unit>(
+            route = "/chat/$chatId/leave"
+        ).asEmptyResult()
     }
 }

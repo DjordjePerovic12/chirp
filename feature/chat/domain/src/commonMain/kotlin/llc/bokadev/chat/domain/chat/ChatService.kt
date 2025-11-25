@@ -2,6 +2,7 @@ package llc.bokadev.chat.domain.chat
 
 import llc.bokadev.chat.domain.models.Chat
 import llc.bokadev.core.domain.util.DataError
+import llc.bokadev.core.domain.util.EmptyResult
 import llc.bokadev.core.domain.util.Result
 
 interface ChatService {
@@ -12,5 +13,7 @@ interface ChatService {
     suspend fun getChats(): Result<List<Chat>, DataError.Remote>
 
     suspend fun getChatById(chatId: String): Result<Chat, DataError.Remote>
+
+    suspend fun leaveChat(chatId: String): EmptyResult<DataError.Remote>
 
 }

@@ -1,20 +1,26 @@
 package llc.bokadev.chat.presentation.chat_detail
 
+import androidx.compose.foundation.text.input.clearText
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import llc.bokadev.chat.domain.chat.ChatRepository
 import llc.bokadev.chat.presentation.model.toUi
 import llc.bokadev.core.domain.auth.SessionStorage
+import llc.bokadev.core.domain.util.onFailure
+import llc.bokadev.core.domain.util.onSuccess
+import llc.bokadev.core.presentation.util.toUiText
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ChatDetailViewModel(
@@ -22,6 +28,8 @@ class ChatDetailViewModel(
     private val sessionStorage: SessionStorage
 ) : ViewModel() {
 
+    private val eventChannel = Channel<ChatDetailEvent>()
+    val events = eventChannel.receiveAsFlow()
     private val _chatId = MutableStateFlow<String?>(null)
     private var hasLoadedInitialData = false
 
@@ -33,7 +41,6 @@ class ChatDetailViewModel(
         }
 
 
-
     private val _state = MutableStateFlow(ChatDetailState())
 
     private val stateWithMessages = combine(
@@ -41,7 +48,7 @@ class ChatDetailViewModel(
         chatInfoFlow,
         sessionStorage.observeAuthInfo()
     ) { currentState, chatInfo, authInfo ->
-        if(authInfo == null) {
+        if (authInfo == null) {
             return@combine ChatDetailState()
         }
         currentState.copy(
@@ -52,7 +59,7 @@ class ChatDetailViewModel(
 
     val state = _chatId
         .flatMapLatest { chatId ->
-            if(chatId != null) {
+            if (chatId != null) {
                 stateWithMessages
             } else {
                 _state
@@ -73,7 +80,54 @@ class ChatDetailViewModel(
     fun onAction(action: ChatDetailAction) {
         when (action) {
             is ChatDetailAction.OnSelectChat -> switchChat(action.chatId)
-            else -> Unit
+            ChatDetailAction.OnBackClick -> {}
+            ChatDetailAction.OnChatMembersClick -> {}
+            ChatDetailAction.OnChatOptionsClick -> onChatOptionsClick()
+            is ChatDetailAction.OnDeleteMessageClick -> {}
+            ChatDetailAction.OnDismissChatOptions -> onDismissChatOptions()
+            ChatDetailAction.OnDismissMessageMenu -> {}
+            ChatDetailAction.OnLeaveChatClick -> onLeaveChatClick()
+            is ChatDetailAction.OnMessageLongClick -> {}
+            is ChatDetailAction.OnRetryClick -> {}
+            ChatDetailAction.OnScrollToTop -> {}
+            ChatDetailAction.OnSendMessageClick -> {}
+        }
+    }
+
+    private fun onLeaveChatClick() {
+        val chatId = _chatId.value ?: return
+
+        _state.update { it.copy(isChatOptionsOpen = false) }
+
+        viewModelScope.launch {
+            chatRepository
+                .leaveChat(chatId)
+                .onSuccess {
+                    _state.value.messageTextFieldState.clearText()
+
+                    _chatId.update { null }
+                    _state.update { it.copy(
+                        chatUi = null,
+                        messages = emptyList(),
+                        bannerState = BannerState()
+
+                    ) }
+                }
+                .onFailure { error ->
+                    eventChannel.send(ChatDetailEvent.OnError(error.toUiText()))
+                }
+        }
+    }
+
+    private fun onDismissChatOptions() {
+        _state.update {
+            it.copy(isChatOptionsOpen = false)
+        }
+    }
+
+    private fun onChatOptionsClick() {
+        _state.update {
+            it.copy(isChatOptionsOpen = true)
         }
     }
 

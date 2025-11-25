@@ -1,60 +1,42 @@
 package llc.bokadev.chat.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
-import kotlinx.coroutines.flow.Flow
 import llc.bokadev.chat.database.entities.ChatEntity
 import llc.bokadev.chat.database.entities.ChatInfoEntity
 import llc.bokadev.chat.database.entities.ChatMessageEntity
 import llc.bokadev.chat.database.entities.ChatParticipantCrossRef
 import llc.bokadev.chat.database.entities.ChatParticipantEntity
 import llc.bokadev.chat.database.entities.ChatWithParticipants
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ChatDao {
 
     @Upsert
-    suspend fun upsertChat(chatEntity: ChatEntity)
+    suspend fun upsertChat(chat: ChatEntity)
 
     @Upsert
     suspend fun upsertChats(chats: List<ChatEntity>)
 
-    @Query(
-        "DELETE FROM chatentity WHERE chatId = :chatId"
-    )
+    @Query("DELETE FROM chatentity WHERE chatId = :chatId")
     suspend fun deleteChatById(chatId: String)
 
     @Query("SELECT * FROM chatentity ORDER BY lastActivityAt DESC")
     @Transaction
     fun getChatsWithParticipants(): Flow<List<ChatWithParticipants>>
 
-
-    @Query(
-        """
-        SELECT DISTINCT c.*
-        FROM chatentity c
-        JOIN chatparticipantcrossref cpcr ON c.chatId = cpcr.chatId
-        WHERE cpcr.isActive = 1
-        ORDER BY lastActivityAt DESC
-    """
-    )
-    @Transaction
-    fun getChatsWithActiveParticipants(): Flow<List<ChatWithParticipants>>
-
-
     @Query("SELECT * FROM chatentity WHERE chatId = :id")
     @Transaction
-    suspend fun getChatById(id: String): ChatWithParticipants
+    suspend fun getChatById(id: String): ChatWithParticipants?
 
     @Query("DELETE FROM chatentity")
     suspend fun deleteAllChats()
 
-    @Query("SELECT chatId FROM  chatentity")
+    @Query("SELECT chatId FROM chatentity")
     suspend fun getAllChatIds(): List<String>
-
 
     @Transaction
     suspend fun deleteChatsByIds(chatIds: List<String>) {
@@ -66,28 +48,24 @@ interface ChatDao {
     @Query("SELECT COUNT(*) FROM chatentity")
     fun getChatCount(): Flow<Int>
 
-    @Query(
-        """
+    @Query("""
         SELECT p.*
         FROM chatparticipantentity p
         JOIN chatparticipantcrossref cpcr ON p.userId = cpcr.userId
         WHERE cpcr.chatId = :chatId AND cpcr.isActive = true
         ORDER BY p.username
-    """
-    )
+    """)
     fun getActiveParticipantsByChatId(chatId: String): Flow<List<ChatParticipantEntity>>
-
 
     @Query("""
         SELECT c.*
         FROM chatentity c
-        JOIN chatparticipantcrossref cpcr ON c.chatId = cpcr.chatId
-        WHERE c.chatId = :chatId AND cpcr.isActive = true
+        WHERE c.chatId = :chatId
     """)
     @Transaction
     fun getChatInfoById(chatId: String): Flow<ChatInfoEntity?>
 
-
+    @Transaction
     suspend fun upsertChatWithParticipantsAndCrossRefs(
         chat: ChatEntity,
         participants: List<ChatParticipantEntity>,
@@ -96,17 +74,19 @@ interface ChatDao {
     ) {
         upsertChat(chat)
         participantDao.upsertParticipants(participants)
-        val crossRegs = participants.map {
+
+        val crossRefs = participants.map {
             ChatParticipantCrossRef(
                 chatId = chat.chatId,
                 userId = it.userId,
                 isActive = true
             )
         }
-        crossRefDao.upsertCrossRefs(crossRegs)
+        crossRefDao.upsertCrossRefs(crossRefs)
         crossRefDao.syncParticipants(chat.chatId, participants)
     }
 
+    @Transaction
     suspend fun upsertChatsWithParticipantsAndCrossRefs(
         chats: List<ChatWithParticipants>,
         participantDao: ChatParticipantDao,
@@ -118,7 +98,6 @@ interface ChatDao {
         val serverChatIds = chats.map { it.chat.chatId }
         val localChatIds = getAllChatIds()
         val staleChatIds = localChatIds - serverChatIds
-
 
         chats.forEach { chat ->
             chat.lastMessage?.run {
@@ -155,8 +134,6 @@ interface ChatDao {
                 participants = chat.participants
             )
         }
-
-
 
         deleteChatsByIds(staleChatIds)
     }
