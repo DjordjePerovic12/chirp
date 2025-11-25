@@ -35,7 +35,7 @@ import chirp.feature.chat.presentation.generated.resources.no_chats
 import chirp.feature.chat.presentation.generated.resources.no_chats_subtitle
 import llc.bokadev.chat.presentation.chat_list.components.ChatListHeader
 import llc.bokadev.chat.presentation.chat_list.components.ChatListItemUI
-import llc.bokadev.chat.presentation.components.EmptyListSection
+import llc.bokadev.chat.presentation.components.EmptySection
 import llc.bokadev.chat.presentation.model.ChatUi
 import llc.bokadev.core.designsystem.components.brand.ChirpHorizontalDivider
 import llc.bokadev.core.designsystem.components.buttons.ChirpFloatingActionButton
@@ -131,7 +131,7 @@ fun ChatListScreen(
                 }
 
                 state.chats.isEmpty() -> {
-                    EmptyListSection(
+                    EmptySection(
                         title = stringResource(Res.string.no_chats),
                         description = stringResource(Res.string.no_chats_subtitle),
                         modifier = Modifier.weight(1f)
