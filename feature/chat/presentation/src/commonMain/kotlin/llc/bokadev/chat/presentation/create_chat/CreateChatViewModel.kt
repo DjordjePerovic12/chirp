@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import llc.bokadev.chat.domain.chat.ChatParticipantService
+import llc.bokadev.chat.domain.chat.ChatRepository
 import llc.bokadev.chat.domain.chat.ChatService
 import llc.bokadev.chat.presentation.mappers.toUi
 import llc.bokadev.core.domain.util.DataError
@@ -30,7 +31,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class CreateChatViewModel(
     private val chatParticipantService: ChatParticipantService,
-    private val chatService: ChatService
+    private val chatRepository: ChatRepository
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -85,7 +86,7 @@ class CreateChatViewModel(
                 )
             }
 
-            chatService.createChat(
+            chatRepository.createChat(
                 otherUserIds = userIds
             )
                 .onSuccess { chat ->

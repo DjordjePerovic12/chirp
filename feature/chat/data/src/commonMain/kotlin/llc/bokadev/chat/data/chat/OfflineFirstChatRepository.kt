@@ -18,6 +18,7 @@ import llc.bokadev.core.domain.util.Result
 import llc.bokadev.core.domain.util.asEmptyResult
 import llc.bokadev.core.domain.util.onFailure
 import llc.bokadev.core.domain.util.onSuccess
+import kotlin.collections.map
 
 class OfflineFirstChatRepository(
     private val chatService: ChatService,
@@ -70,5 +71,18 @@ class OfflineFirstChatRepository(
                     crossRefDao = db.chatParticipantsCrossRefDao
                 )
             }.asEmptyResult()
+    }
+
+    override suspend fun createChat(otherUserIds: List<String>): Result<Chat, DataError.Remote> {
+        return chatService
+            .createChat(otherUserIds)
+            .onSuccess { chat ->
+                db.chatDao.upsertChatWithParticipantsAndCrossRefs(
+                    chat = chat.toEntity(),
+                    participants = chat.participants.map { it.toEntity() },
+                    participantDao = db.chatParticipantDao,
+                    crossRefDao = db.chatParticipantsCrossRefDao
+                )
+            }
     }
 }

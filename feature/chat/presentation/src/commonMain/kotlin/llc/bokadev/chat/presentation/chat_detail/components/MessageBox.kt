@@ -49,8 +49,7 @@ fun MessageBox(
 
     ChirpMultiLineTextField(
         state = messageTextFieldState,
-        modifier = modifier
-            .padding(4.dp),
+        modifier = modifier,
         placeholder = stringResource(Res.string.send_message),
         enabled = isTextInputEnabled,
         keyboardOptions = KeyboardOptions(
