@@ -4,6 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import llc.bokadev.chat.data.dto.ChatDto
 import llc.bokadev.chat.data.dto.request.CreateChatRequest
+import llc.bokadev.chat.data.dto.request.ParticipantsRequest
 import llc.bokadev.chat.data.mappers.toDomain
 import llc.bokadev.chat.domain.chat.ChatService
 import llc.bokadev.chat.domain.models.Chat
@@ -46,5 +47,15 @@ class KtorChatService(
         return httpClient.delete<Unit>(
             route = "/chat/$chatId/leave"
         ).asEmptyResult()
+    }
+
+    override suspend fun addParticipantsToChat(
+        chatId: String,
+        userIds: List<String>
+    ): Result<Chat, DataError.Remote> {
+        return httpClient.post<ParticipantsRequest, ChatDto>(
+            route = "/chat/$chatId/add",
+            body = ParticipantsRequest(userIds)
+        ).map { it.toDomain() }
     }
 }

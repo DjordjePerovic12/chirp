@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.cancel
-import chirp.feature.chat.presentation.generated.resources.create_chat
 import llc.bokadev.chat.presentation.components.ChatParticipantSearchTextSection
 import llc.bokadev.chat.presentation.components.ChatParticipantsSelectionSection
 import llc.bokadev.chat.presentation.components.ManageChatButtonSection
@@ -100,7 +99,7 @@ fun ManageChatScreen(
                         onAction(ManageChatAction.OnPrimaryActionClick)
                     },
                     enabled = state.selectedChatParticipants.isNotEmpty(),
-                    isLoading = state.isCreatingChat
+                    isLoading = state.isSubmitting
                 )
             },
             secondaryButton = {
@@ -112,7 +111,7 @@ fun ManageChatScreen(
                     style = ChirpButtonStyle.SECONDARY
                 )
             },
-            error = state.createChatError?.asString(),
+            error = state.submitError?.asString(),
             modifier = Modifier.fillMaxWidth()
         )
     }

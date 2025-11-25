@@ -18,6 +18,7 @@ import llc.bokadev.chat.domain.chat.ChatRepository
 import llc.bokadev.chat.domain.chat.ChatService
 import llc.bokadev.chat.domain.models.Chat
 import llc.bokadev.chat.domain.models.ChatInfo
+import llc.bokadev.chat.domain.models.ChatParticipant
 import llc.bokadev.core.domain.util.DataError
 import llc.bokadev.core.domain.util.EmptyResult
 import llc.bokadev.core.domain.util.Result
@@ -64,6 +65,15 @@ class OfflineFirstChatRepository(
                 )
             }
             .map { it.toDomain() }
+    }
+
+    override fun getActiveParticipantsByChatId(chatId: String): Flow<List<ChatParticipant>> {
+        return db.chatDao.getActiveParticipantsByChatId(chatId)
+            .map { participants ->
+                participants.map {
+                    it.toDomain()
+                }
+            }
     }
 
     override suspend fun fetchChats(): Result<List<Chat>, DataError.Remote> {
@@ -123,6 +133,22 @@ class OfflineFirstChatRepository(
             }
     }
 
+    override suspend fun addParticipantsToChat(
+        chatId: String,
+        userIds: List<String>
+    ): Result<Chat, DataError.Remote> {
+        return chatService
+            .addParticipantsToChat(chatId, userIds)
+            .onSuccess { chat ->
+                db.chatDao.upsertChatWithParticipantsAndCrossRefs(
+                    chat = chat.toEntity(),
+                    participants = chat.participants.map { it.toEntity() },
+                    participantDao = db.chatParticipantDao,
+                    crossRefDao = db.chatParticipantsCrossRefDao
+                )
+            }
+    }
+
     private suspend fun List<ChatParticipantEntity>.onlyActive(chatId: String): List<ChatParticipantEntity> {
         val activeParticipantIds = db
             .chatDao
@@ -132,4 +158,5 @@ class OfflineFirstChatRepository(
 
         return this.filter { it.userId in activeParticipantIds }
     }
+
 }
