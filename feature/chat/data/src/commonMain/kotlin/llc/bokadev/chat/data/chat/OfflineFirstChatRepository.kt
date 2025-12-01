@@ -14,6 +14,7 @@ import llc.bokadev.chat.data.lifecycle.AppLifecycleObserver
 import llc.bokadev.chat.data.mappers.toDomain
 import llc.bokadev.chat.data.mappers.toEntity
 import llc.bokadev.chat.data.mappers.toLastMessageView
+import llc.bokadev.chat.data.network.ConnectivityObserver
 import llc.bokadev.chat.database.ChirpChatDatabase
 import llc.bokadev.chat.database.entities.ChatInfoEntity
 import llc.bokadev.chat.database.entities.ChatParticipantEntity
@@ -34,12 +35,12 @@ import kotlin.collections.map
 class OfflineFirstChatRepository(
     private val chatService: ChatService,
     private val db: ChirpChatDatabase,
-    private val observer: AppLifecycleObserver
+    private val observer: ConnectivityObserver
 ) : ChatRepository {
 
     init {
-        observer.isInForeground.onEach { isInForeground ->
-            println("Is app in foreground? $isInForeground")
+        observer.isConnected.onEach { isConnected ->
+            println("Is app connected? $isConnected")
         }.launchIn(GlobalScope)
     }
 

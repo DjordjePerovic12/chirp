@@ -1,0 +1,6 @@
+language = Objective-C
+package = platfrom.Network
+modules = Netork
+
+compilerOpts = -framework Network
+linkerOpts = -framework Network
