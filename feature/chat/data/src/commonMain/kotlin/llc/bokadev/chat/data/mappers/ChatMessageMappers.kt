@@ -1,6 +1,7 @@
 package llc.bokadev.chat.data.mappers
 
 import llc.bokadev.chat.data.dto.ChatMessageDto
+import llc.bokadev.chat.data.dto.websocket.IncomingWebSocketDto
 import llc.bokadev.chat.data.dto.websocket.OutgoingWebSocketDto
 import llc.bokadev.chat.data.dto.websocket.OutgoingWebSocketType
 import llc.bokadev.chat.database.entities.ChatMessageEntity
@@ -70,5 +71,16 @@ fun ChatMessage.toNewMessage(): OutgoingWebSocketDto.NewMessage {
         messageId = id,
         chatId = chatId,
         content = content
+    )
+}
+
+fun IncomingWebSocketDto.NewMessageDto.toEntity(): ChatMessageEntity {
+    return ChatMessageEntity(
+        messageId = id,
+        chatId = chatId,
+        senderId = senderId,
+        content = content,
+        timestamp = Instant.parse(createdAt).toEpochMilliseconds(),
+        deliveryStatus = ChatMessageDeliveryStatus.SENT.name
     )
 }
