@@ -1,6 +1,8 @@
 package llc.bokadev.chat.data.mappers
 
 import llc.bokadev.chat.data.dto.ChatMessageDto
+import llc.bokadev.chat.data.dto.websocket.OutgoingWebSocketDto
+import llc.bokadev.chat.data.dto.websocket.OutgoingWebSocketType
 import llc.bokadev.chat.database.entities.ChatMessageEntity
 import llc.bokadev.chat.database.view.LastMessageView
 import llc.bokadev.chat.domain.models.ChatMessage
@@ -59,5 +61,14 @@ fun ChatMessage.toLastMessageView(): LastMessageView {
         content = content,
         timestamp = createdAt.toEpochMilliseconds(),
         deliveryStatus = deliveryStatus.name
+    )
+}
+
+
+fun ChatMessage.toNewMessage(): OutgoingWebSocketDto.NewMessage {
+    return OutgoingWebSocketDto.NewMessage(
+        messageId = id,
+        chatId = chatId,
+        content = content
     )
 }

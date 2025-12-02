@@ -1,4 +1,4 @@
-package llc.bokadev.chat.domain.chat.error
+package llc.bokadev.chat.domain.error
 
 import llc.bokadev.core.domain.util.Error
 

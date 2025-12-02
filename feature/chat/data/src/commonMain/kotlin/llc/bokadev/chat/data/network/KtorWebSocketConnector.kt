@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import llc.bokadev.chat.data.dto.websocket.WebSocketMessageDto
 import llc.bokadev.chat.data.lifecycle.AppLifecycleObserver
-import llc.bokadev.chat.domain.chat.error.ConnectionError
+import llc.bokadev.chat.domain.error.ConnectionError
 import llc.bokadev.chat.domain.models.ConnectionState
 import llc.bokadev.core.data.networking.UrlConstants.BASE_URL_WS
 import llc.bokadev.core.domain.auth.SessionStorage
