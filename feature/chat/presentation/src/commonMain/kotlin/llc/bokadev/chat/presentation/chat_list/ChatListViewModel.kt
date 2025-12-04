@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import llc.bokadev.chat.domain.chat.ChatRepository
 import llc.bokadev.chat.presentation.mappers.toUi
-import llc.bokadev.chat.presentation.model.toUi
 import llc.bokadev.core.domain.auth.SessionStorage
 
 class ChatListViewModel(

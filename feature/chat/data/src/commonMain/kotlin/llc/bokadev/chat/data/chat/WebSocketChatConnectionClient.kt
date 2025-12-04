@@ -1,12 +1,9 @@
 package llc.bokadev.chat.data.chat
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
@@ -25,7 +22,6 @@ import llc.bokadev.chat.domain.error.ConnectionError
 import llc.bokadev.chat.domain.message.MessageRepository
 import llc.bokadev.chat.domain.models.ChatMessage
 import llc.bokadev.chat.domain.models.ChatMessageDeliveryStatus
-import llc.bokadev.chat.domain.models.ConnectionState
 import llc.bokadev.core.domain.auth.SessionStorage
 import llc.bokadev.core.domain.util.EmptyResult
 import llc.bokadev.core.domain.util.onFailure
@@ -113,7 +109,7 @@ class WebSocketChatConnectionClient(
     }
 
     private suspend fun deleteMessage(message: IncomingWebSocketDto.MessageDeletedDto) {
-        database.chatMessageDao.deleteMessageById(message.messageId)
+        database.chatMessageDao.deleteMessagesById(message.messageId)
     }
 
     private suspend fun handleNewMessage(message: IncomingWebSocketDto.NewMessageDto) {

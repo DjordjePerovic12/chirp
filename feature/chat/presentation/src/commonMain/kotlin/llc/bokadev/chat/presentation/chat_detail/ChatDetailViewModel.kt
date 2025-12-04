@@ -8,15 +8,22 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import llc.bokadev.chat.domain.chat.ChatConnectionClient
 import llc.bokadev.chat.domain.chat.ChatRepository
-import llc.bokadev.chat.presentation.model.toUi
+import llc.bokadev.chat.domain.message.MessageRepository
+import llc.bokadev.chat.domain.models.ConnectionState
+import llc.bokadev.chat.presentation.mappers.toUi
 import llc.bokadev.core.domain.auth.SessionStorage
 import llc.bokadev.core.domain.util.onFailure
 import llc.bokadev.core.domain.util.onSuccess
@@ -25,7 +32,9 @@ import llc.bokadev.core.presentation.util.toUiText
 @OptIn(ExperimentalCoroutinesApi::class)
 class ChatDetailViewModel(
     private val chatRepository: ChatRepository,
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val messageRepository: MessageRepository,
+    private val connectionClient: ChatConnectionClient
 ) : ViewModel() {
 
     private val eventChannel = Channel<ChatDetailEvent>()
@@ -67,7 +76,8 @@ class ChatDetailViewModel(
         }
         .onStart {
             if (!hasLoadedInitialData) {
-                /** Load initial data here **/
+                observeConnectionState()
+                observeChatMessages()
                 hasLoadedInitialData = true
             }
         }
@@ -94,6 +104,70 @@ class ChatDetailViewModel(
         }
     }
 
+
+    private fun observeChatMessages() {
+        val currentMessages = state
+            .map { it.messages }
+            .distinctUntilChanged()
+
+        val newMessages = _chatId
+            .flatMapLatest { chatId ->
+                if (chatId != null) {
+                    messageRepository
+                        .getMessagesForChat(chatId)
+                } else emptyFlow()
+            }
+            .combine(
+                sessionStorage.observeAuthInfo()
+            ) { messages, authInfo ->
+                if(authInfo == null) {
+                    return@combine messages
+                }
+                _state.update {
+                    it.copy(
+                        messages = messages.map { it.toUi(authInfo.user.id) }
+                    )
+                }
+                messages
+            }
+
+
+        val isNearBottom = state.map { it.isNearBottom }.distinctUntilChanged()
+
+        combine(
+            currentMessages,
+            newMessages,
+            isNearBottom
+        ) { currentMessages, newMessages, isNearBottom ->
+            val lastNewId = newMessages.lastOrNull()?.message?.id
+            val lastCurrentId = currentMessages.lastOrNull()?.id
+
+            if (lastNewId != lastCurrentId && isNearBottom) {
+                eventChannel.send(ChatDetailEvent.OnNewMessage)
+            }
+
+        }.launchIn(viewModelScope)
+    }
+
+    private fun observeConnectionState() {
+        connectionClient
+            .connectionState
+            .onEach { connectionState ->
+                if (connectionState == ConnectionState.CONNECTED) {
+                    _chatId.value?.let {
+                        messageRepository.fetchMessages(it, before = null)
+                    }
+                }
+
+                _state.update {
+                    it.copy(
+                        connectionState = connectionState
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
     private fun onLeaveChatClick() {
         val chatId = _chatId.value ?: return
 
@@ -106,12 +180,14 @@ class ChatDetailViewModel(
                     _state.value.messageTextFieldState.clearText()
 
                     _chatId.update { null }
-                    _state.update { it.copy(
-                        chatUi = null,
-                        messages = emptyList(),
-                        bannerState = BannerState()
+                    _state.update {
+                        it.copy(
+                            chatUi = null,
+                            messages = emptyList(),
+                            bannerState = BannerState()
 
-                    ) }
+                        )
+                    }
                 }
                 .onFailure { error ->
                     eventChannel.send(ChatDetailEvent.OnError(error.toUiText()))

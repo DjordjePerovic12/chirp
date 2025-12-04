@@ -1,7 +1,7 @@
-package llc.bokadev.chat.presentation.model
+package llc.bokadev.chat.presentation.mappers
 
 import llc.bokadev.chat.domain.models.Chat
-import llc.bokadev.chat.presentation.mappers.toUi
+import llc.bokadev.chat.presentation.model.ChatUi
 
 fun Chat.toUi(localParticipantId: String): ChatUi {
     val (local, other) = participants.partition { it.userId == localParticipantId }
