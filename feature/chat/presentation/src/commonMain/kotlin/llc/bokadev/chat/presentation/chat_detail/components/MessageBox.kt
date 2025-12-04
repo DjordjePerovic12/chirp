@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -22,7 +20,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.cloud_off_icon
-import chirp.feature.chat.presentation.generated.resources.offline
 import chirp.feature.chat.presentation.generated.resources.send
 import chirp.feature.chat.presentation.generated.resources.send_message
 import llc.bokadev.chat.domain.models.ConnectionState
@@ -31,7 +28,6 @@ import llc.bokadev.core.designsystem.components.buttons.ChirpButton
 import llc.bokadev.core.designsystem.components.textfields.ChirpMultiLineTextField
 import llc.bokadev.core.designsystem.theme.ChirpTheme
 import llc.bokadev.core.designsystem.theme.extended
-import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -40,7 +36,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun MessageBox(
     messageTextFieldState: TextFieldState,
-    isTextInputEnabled: Boolean,
+    isSendButtonEnabled: Boolean,
     connectionState: ConnectionState,
     onSendClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -51,7 +47,6 @@ fun MessageBox(
         state = messageTextFieldState,
         modifier = modifier,
         placeholder = stringResource(Res.string.send_message),
-        enabled = isTextInputEnabled,
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Send
         ),
@@ -80,7 +75,7 @@ fun MessageBox(
             ChirpButton(
                 text = stringResource(Res.string.send),
                 onClick = onSendClick,
-                enabled = isConnected
+                enabled = isConnected && isSendButtonEnabled
             )
         }
     )
@@ -98,7 +93,7 @@ fun MessageBoxPreview() {
         ) {
             MessageBox(
                 messageTextFieldState = rememberTextFieldState(),
-                isTextInputEnabled = true,
+                isSendButtonEnabled = true,
                 connectionState = ConnectionState.ERROR_NETWORK,
                 onSendClick = {},
                 modifier = Modifier

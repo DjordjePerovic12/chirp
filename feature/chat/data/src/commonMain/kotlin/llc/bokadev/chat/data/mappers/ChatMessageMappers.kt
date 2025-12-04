@@ -1,5 +1,6 @@
 package llc.bokadev.chat.data.mappers
 
+import kotlinx.coroutines.flow.combine
 import llc.bokadev.chat.data.dto.ChatMessageDto
 import llc.bokadev.chat.data.dto.websocket.IncomingWebSocketDto
 import llc.bokadev.chat.data.dto.websocket.OutgoingWebSocketDto
@@ -8,6 +9,8 @@ import llc.bokadev.chat.database.entities.ChatMessageEntity
 import llc.bokadev.chat.database.view.LastMessageView
 import llc.bokadev.chat.domain.models.ChatMessage
 import llc.bokadev.chat.domain.models.ChatMessageDeliveryStatus
+import llc.bokadev.chat.domain.models.OutgoingNewMessage
+import kotlin.time.Clock
 import kotlin.time.Instant
 
 fun ChatMessageDto.toDomain(): ChatMessage {
@@ -82,5 +85,27 @@ fun IncomingWebSocketDto.NewMessageDto.toEntity(): ChatMessageEntity {
         content = content,
         timestamp = Instant.parse(createdAt).toEpochMilliseconds(),
         deliveryStatus = ChatMessageDeliveryStatus.SENT.name
+    )
+}
+
+fun OutgoingNewMessage.toWebSocketDto(): OutgoingWebSocketDto.NewMessage {
+    return OutgoingWebSocketDto.NewMessage(
+        chatId = chatId,
+        messageId = messageId,
+        content = content
+    )
+}
+
+fun OutgoingWebSocketDto.NewMessage.toEntity(
+    senderId: String,
+    deliveryStatus: ChatMessageDeliveryStatus
+): ChatMessageEntity {
+    return ChatMessageEntity(
+        messageId = messageId,
+        chatId = chatId,
+        content = content,
+        senderId = senderId,
+        deliveryStatus = deliveryStatus.name,
+        timestamp = Clock.System.now().toEpochMilliseconds()
     )
 }

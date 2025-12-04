@@ -32,11 +32,11 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import llc.bokadev.chat.data.dto.websocket.WebSocketMessageDto
 import llc.bokadev.chat.data.lifecycle.AppLifecycleObserver
-import llc.bokadev.chat.domain.error.ConnectionError
 import llc.bokadev.chat.domain.models.ConnectionState
 import llc.bokadev.core.data.networking.UrlConstants.BASE_URL_WS
 import llc.bokadev.core.domain.auth.SessionStorage
 import llc.bokadev.core.domain.logging.ChirpLogger
+import llc.bokadev.core.domain.util.DataError
 import llc.bokadev.core.domain.util.EmptyResult
 import llc.bokadev.core.domain.util.Result
 import llc.bokadev.feature.chat.data.BuildKonfig
@@ -209,11 +209,11 @@ class KtorWebSocketConnector(
         }
     }
 
-    suspend fun sendMessage(message: String): EmptyResult<ConnectionError> {
+    suspend fun sendMessage(message: String): EmptyResult<DataError.Connection> {
         val connectionState = connectionState.value
 
         if (currentSession == null || connectionState != ConnectionState.CONNECTED) {
-            return Result.Failure(ConnectionError.NOT_CONNECTED)
+            return Result.Failure(DataError.Connection.NOT_CONNECTED)
         }
 
         return try {
@@ -222,7 +222,7 @@ class KtorWebSocketConnector(
         } catch (e: Exception) {
             coroutineContext.ensureActive()
             logger.error("Unable to send WS message", e)
-            Result.Failure(ConnectionError.MESSAGE_SEND_FAILED)
+            Result.Failure(DataError.Connection.MESSAGE_SEND_FAILED)
         }
     }
 

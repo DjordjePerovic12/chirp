@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import llc.bokadev.chat.domain.models.ChatMessage
 import llc.bokadev.chat.domain.models.ChatMessageDeliveryStatus
 import llc.bokadev.chat.domain.models.MessageWithSender
+import llc.bokadev.chat.domain.models.OutgoingNewMessage
 import llc.bokadev.core.domain.util.DataError
 import llc.bokadev.core.domain.util.EmptyResult
 import llc.bokadev.core.domain.util.Result
@@ -19,6 +20,7 @@ interface MessageRepository {
         before: String? = null
     ): Result<List<ChatMessage>, DataError>
 
+    suspend fun sendMessage(message: OutgoingNewMessage): EmptyResult<DataError>
     fun getMessagesForChat(chatId: String): Flow<List<MessageWithSender>>
 
 

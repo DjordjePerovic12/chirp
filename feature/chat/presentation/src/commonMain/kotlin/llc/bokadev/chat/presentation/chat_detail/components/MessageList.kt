@@ -50,7 +50,7 @@ fun MessageList(
         ) {
             items(
                 items = messages,
-                key = { it.id }
+//                key = { it.id }
             ) { message ->
                 MessageListItemUi(
                     message = message,
@@ -59,7 +59,7 @@ fun MessageList(
                     onDeleteClick = onDeleteMessageClick,
                     onRetryClick = onMessageRetry,
                     modifier = Modifier.fillMaxWidth()
-                        .animateItem()
+//                        .animateItem()
                 )
             }
         }

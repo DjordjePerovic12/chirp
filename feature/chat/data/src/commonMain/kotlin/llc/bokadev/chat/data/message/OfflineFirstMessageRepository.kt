@@ -1,27 +1,74 @@
 package llc.bokadev.chat.data.message
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import llc.bokadev.chat.data.dto.websocket.OutgoingWebSocketDto
+import llc.bokadev.chat.data.dto.websocket.WebSocketMessageDto
 import llc.bokadev.chat.data.mappers.toDomain
 import llc.bokadev.chat.data.mappers.toEntity
+import llc.bokadev.chat.data.mappers.toWebSocketDto
+import llc.bokadev.chat.data.network.KtorWebSocketConnector
 import llc.bokadev.chat.database.ChirpChatDatabase
 import llc.bokadev.chat.domain.message.ChatMessageService
 import llc.bokadev.chat.domain.message.MessageRepository
 import llc.bokadev.chat.domain.models.ChatMessage
 import llc.bokadev.chat.domain.models.ChatMessageDeliveryStatus
 import llc.bokadev.chat.domain.models.MessageWithSender
+import llc.bokadev.chat.domain.models.OutgoingNewMessage
 import llc.bokadev.core.data.database.safeDatabaseUpdate
+import llc.bokadev.core.domain.auth.SessionStorage
 import llc.bokadev.core.domain.util.DataError
 import llc.bokadev.core.domain.util.EmptyResult
 import llc.bokadev.core.domain.util.Result
 import llc.bokadev.core.domain.util.asEmptyResult
+import llc.bokadev.core.domain.util.onFailure
 import llc.bokadev.core.domain.util.onSuccess
 import kotlin.time.Clock
 
 class OfflineFirstMessageRepository(
     private val database: ChirpChatDatabase,
-    private val messageService: ChatMessageService
+    private val messageService: ChatMessageService,
+    private val sessionStorage: SessionStorage,
+    private val json: Json,
+    private val webSocketConnector: KtorWebSocketConnector,
+    private val applicationScope: CoroutineScope
 ) : MessageRepository {
+
+    override suspend fun sendMessage(message: OutgoingNewMessage): EmptyResult<DataError> {
+        return safeDatabaseUpdate {
+            val dto = message.toWebSocketDto()
+            val localUserId = sessionStorage.observeAuthInfo().first()?.user
+                ?: return Result.Failure(DataError.Local.NOT_FOUND)
+            val entity = dto.toEntity(
+                senderId = localUserId.id,
+                deliveryStatus = ChatMessageDeliveryStatus.SENDING
+
+            )
+            database.chatMessageDao.upsertMessage(entity)
+
+         return   webSocketConnector
+                .sendMessage(dto.toJsonPayload())
+                .onFailure { error ->
+                    applicationScope.launch {
+                        database.chatMessageDao.upsertMessage(
+                            dto.toEntity(
+                                senderId = localUserId.id,
+                                deliveryStatus = ChatMessageDeliveryStatus.FAILED
+                            )
+                        )
+                    }.join()
+                }
+
+
+        }
+    }
+
+
     override suspend fun updateMessageDeliveryStatus(
         messageId: String,
         status: ChatMessageDeliveryStatus
@@ -61,5 +108,15 @@ class OfflineFirstMessageRepository(
             .map { messages ->
                 messages.map { it.toDomain() }
             }
+    }
+
+    private fun OutgoingWebSocketDto.NewMessage.toJsonPayload(): String {
+        val webSocketMessage = WebSocketMessageDto(
+            type = type.name,
+            payload = json.encodeToString(this)
+        )
+
+
+        return json.encodeToString(webSocketMessage)
     }
 }
